@@ -6,7 +6,9 @@ import (
 	"code.google.com/p/go-tour/pic"
     "strings"
 	"code.google.com/p/go-tour/wc"
-//    "github.com/petemoore/go_tutorial"
+    "code.google.com/p/go-tour/reader"
+    "io"
+    "os"
 )
 
 var (
@@ -14,6 +16,28 @@ var (
 )
 
 type IPAddr [4]byte
+
+type rot13Reader struct {
+	r io.Reader
+}
+
+func (reader rot13Reader) Read(new_bytes []byte) (int, error) {
+    var old_bytes=make([]byte, len(new_bytes))
+    read, err := reader.r.Read(old_bytes)
+	if err != nil {
+	}
+	for i := range old_bytes {
+	    switch b := old_bytes[i]; {
+	    case (b >= 'a' && b <= 'm') || (b >= 'A' && b <= 'M'):
+		    new_bytes[i] = old_bytes[i] + 13
+		case (b >= 'n' && b <= 'z') || (b >= 'N' && b <= 'Z'):
+		    new_bytes[i] = old_bytes[i] - 13
+		default:
+		    new_bytes[i] = old_bytes[i]
+		}
+	}
+	return read, err
+}
 
 func add(x, y int) int {
     return x+y
@@ -81,6 +105,11 @@ func main() {
     main2()
 	fmt.Println(Sqrt(2))
 	fmt.Println(Sqrt(-2))
+    reader.Validate(MyReader{})
+	str := strings.NewReader("Lbh penpxrq gur pbqr!")
+	r := rot13Reader{str}
+	io.Copy(os.Stdout, &r)
+    fmt.Println()
 }
 
 type ErrNegativeSqrt float64
@@ -100,6 +129,15 @@ func Sqrt(x float64) (float64, error) {
         z=z-(z*z-x)/(2*z)
     }   
     return z, nil
+}
+
+type MyReader struct{}
+
+func (reader MyReader) Read(bytes []byte) (int, error) {
+    for b := range bytes {
+	    bytes[b] = byte(65)
+	}
+	return len(bytes), nil
 }
 
 func Pic(dx, dy int) [][]uint8 {
