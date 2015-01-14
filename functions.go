@@ -49,12 +49,9 @@ func swap(x, y string) (A, B string) {
 }
 
 func fibonacci() func() int {
-    last := 1
-    penultimate :=0
+    penultimate, last := 0, 1
     return func() int {
-        new_last := last + penultimate
-        penultimate = last
-        last = new_last
+        penultimate, last = last, last + penultimate
         return last
     }
 }
