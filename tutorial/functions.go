@@ -9,6 +9,7 @@ import (
     "code.google.com/p/go-tour/reader"
     "io"
     "os"
+    "github.com/petemoore/go_tutorial/lib"
 )
 
 var (
@@ -99,7 +100,9 @@ func main() {
     for n, a := range addrs {
         fmt.Printf("%v: %v\n", n, a)
     }
-    main2()
+    if err := lib.Run(); err != nil {
+        fmt.Println(err)
+    }
     fmt.Println(Sqrt(2))
     fmt.Println(Sqrt(-2))
     reader.Validate(MyReader{})
@@ -119,12 +122,12 @@ func Sqrt(x float64) (float64, error) {
     if x < 0 {
         return 0, ErrNegativeSqrt(x)
     }
-    var oldz float64 = 0 
+    var oldz float64 = 0
     z := 10.0
     for z-oldz > 1e-12 || oldz-z > 1e-12 {
         oldz=z
         z=z-(z*z-x)/(2*z)
-    }   
+    }
     return z, nil
 }
 

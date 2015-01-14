@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"fmt"
@@ -15,15 +15,9 @@ func (e *MyError) Error() string {
 		e.When, e.What)
 }
 
-func run() error {
+func Run() error {
 	return &MyError{
 		time.Now(),
 		"it didn't work",
-	}
-}
-
-func main2() {
-	if err := run(); err != nil {
-		fmt.Println(err)
 	}
 }
